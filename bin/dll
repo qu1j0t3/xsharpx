@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mkdir dist
+gmcs -target:library -out:dist/XSharpx.dll src/XSharpx/*.cs
+
