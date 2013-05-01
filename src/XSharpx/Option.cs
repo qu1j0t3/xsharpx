@@ -3,7 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 
 // todo Sequence (requires List), Traverse (requires List), Boolean
+// todo: IEquatable<Option<A>> ??
 namespace XSharpx {
+  public sealed class Option
+  {
+    private static readonly Option empty = new Option();
+    private Option() { }
+    public static Option Empty { get { return empty; } }
+    public static Option<A> Some<A>(A a) { return Option<A>.Some(a); }
+  }
+
   /// <summary>
   /// An immutable list with a maximum length of 1.
   /// </summary>
@@ -81,54 +90,10 @@ namespace XSharpx {
       return !IsEmpty && f(a);
     }
 
-    private class OptionEnumerator : IEnumerator<A> {
-      private bool z = true;
-      private readonly Option<A> o;
-      private Option<A> a;
-
-      internal OptionEnumerator(Option<A> o) {
-        this.o = o;
-      }
-
-      public void Dispose() {}
-
-      public void Reset() {
-        z = true;
-      }
-
-      public bool MoveNext() {
-        if(z) {
-          a = o;
-          z = false;
-        } else
-          a = Option<A>.Empty;
-
-        return !a.IsEmpty;
-      }
-
-      A IEnumerator<A>.Current {
-        get {
-          return o.Value;
-        }
-      }
-
-      public object Current {
-        get {
-          return o.Value;
-        }
-      }
-    }
-
-    private OptionEnumerator Enumerate() {
-      return new OptionEnumerator(this);
-    }
-
-    IEnumerator<A> IEnumerable<A>.GetEnumerator() {
-        return Enumerate();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() {
-      return Enumerate();
+    public static implicit operator Option<A>(Option o)
+    { 
+      // Only instance of Option is Option.Empty. So return forall A.
+      return Empty;
     }
 
     public static Option<A> Empty {
@@ -150,6 +115,20 @@ namespace XSharpx {
       }
     }
 
+    private IEnumerable<A> Enumerate()
+    {
+      if (!e) yield return a;
+    }
+
+    public IEnumerator<A> GetEnumerator()
+    {
+      return Enumerate().GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
   }
 
   public static class OptionExtension {
@@ -165,6 +144,11 @@ namespace XSharpx {
       return p.IsEmpty ?
         Pair<Option<A>, Option<B>>.pair(Option<A>.Empty, Option<B>.Empty) :
         Pair<Option<A>, Option<B>>.pair(Option<A>.Empty, Option<B>.Empty);
+    }
+
+    public static Option<A> ToOption<A>(this A a)
+    {
+        return ReferenceEquals(null, a) ? Option<A>.Empty : Option<A>.Some(a);
     }
   }
 }
