@@ -35,6 +35,8 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="src\XSharpx\Option.cs" />
     <Compile Include="src\XSharpx\Pair.cs" />
+    <Compile Include="src\XSharpx\ListBuffer.cs" />
+    <Compile Include="src\XSharpx\List.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

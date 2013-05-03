@@ -2,11 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-// todo Sequence (requires List), Traverse (requires List), Boolean
-// todo: IEquatable<Option<A>> ??
 namespace XSharpx {
-  public sealed class Option
-  {
+  public sealed class Option {
     private static readonly Option empty = new Option();
     private Option() { }
     public static Option Empty { get { return empty; } }
@@ -90,6 +87,12 @@ namespace XSharpx {
       return !IsEmpty && f(a);
     }
 
+    public List<A> toList {
+      get {
+        return IsEmpty ? List<A>.Empty : a.ListValue();
+      }
+    }
+
     public static implicit operator Option<A>(Option o)
     { 
       // Only instance of Option is Option.Empty. So return forall A.
@@ -115,18 +118,15 @@ namespace XSharpx {
       }
     }
 
-    private IEnumerable<A> Enumerate()
-    {
+    private IEnumerable<A> Enumerate() {
       if (!e) yield return a;
     }
 
-    public IEnumerator<A> GetEnumerator()
-    {
+    public IEnumerator<A> GetEnumerator() {
       return Enumerate().GetEnumerator();
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
+    IEnumerator IEnumerable.GetEnumerator() {
       return GetEnumerator();
     }
   }
@@ -146,9 +146,12 @@ namespace XSharpx {
         Pair<Option<A>, Option<B>>.pair(Option<A>.Empty, Option<B>.Empty);
     }
 
-    public static Option<A> ToOption<A>(this A a)
-    {
+    public static Option<A> FromNull<A>(this A a) {
         return ReferenceEquals(null, a) ? Option<A>.Empty : Option<A>.Some(a);
+    }
+
+    public static Option<A> Some<A>(this A a) {
+      return Option<A>.Some(a);
     }
   }
 }
