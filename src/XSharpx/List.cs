@@ -316,6 +316,10 @@ namespace XSharpx
       , List<B>.Empty.Some()
       );
     }
+
+    public Func<X, List<B>> TraverseFunc<X, B>(Func<A, Func<X, B>> f) {
+      return x => Select(a => f(a)(x));
+    }
   }
 
   public static class ListExtension {

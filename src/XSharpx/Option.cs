@@ -97,6 +97,12 @@ namespace XSharpx {
       return IsEmpty ? Option<B>.Empty.ListValue() : f(a).Select(q => q.Some());
     }
 
+    public Func<X, Option<B>> TraverseFunc<X, B>(Func<A, Func<X, B>> f) {
+      var z = this;
+      return x =>
+        z.IsEmpty ? Option<B>.Empty : f(z.a)(x).Some();
+    }
+
     public static implicit operator Option<A>(Option o)
     { 
       // Only instance of Option is Option.Empty. So return forall A.
