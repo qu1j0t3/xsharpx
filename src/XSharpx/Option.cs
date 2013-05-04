@@ -87,10 +87,14 @@ namespace XSharpx {
       return !IsEmpty && f(a);
     }
 
-    public List<A> toList {
+    public List<A> ToList {
       get {
         return IsEmpty ? List<A>.Empty : a.ListValue();
       }
+    }
+
+    public List<Option<B>> TraverseList<B>(Func<A, List<B>> f) {
+      return IsEmpty ? Option<B>.Empty.ListValue() : f(a).Select(q => q.Some());
     }
 
     public static implicit operator Option<A>(Option o)
@@ -140,7 +144,7 @@ namespace XSharpx {
       return o.SelectMany(z => z);
     }
 
-    public static Pair<Option<A>, Option<B>> Unzip<A, B>(Option<Pair<A, B>> p) {
+    public static Pair<Option<A>, Option<B>> Unzip<A, B>(this Option<Pair<A, B>> p) {
       return p.IsEmpty ?
         Pair<Option<A>, Option<B>>.pair(Option<A>.Empty, Option<B>.Empty) :
         Pair<Option<A>, Option<B>>.pair(Option<A>.Empty, Option<B>.Empty);

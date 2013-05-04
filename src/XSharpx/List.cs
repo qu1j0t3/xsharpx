@@ -319,6 +319,25 @@ namespace XSharpx
   }
 
   public static class ListExtension {
+    public static List<B> Apply<A, B>(this List<Func<A, B>> f, List<A> o) {
+      return f.ProductWith<A, B>(o, a => b => a(b));
+    }
+
+    public static List<B> ApplyZip<A, B>(this List<Func<A, B>> f, List<A> o) {
+      return f.ZipWith<A, B>(o, a => b => a(b));
+    }
+
+    public static List<A> Flatten<A>(this List<List<A>> o) {
+      return o.SelectMany(z => z);
+    }
+
+    public static Pair<List<A>, List<B>> Unzip<A, B>(this List<Pair<A, B>> p) {
+      return p.FoldRight<Pair<List<A>, List<B>>>(
+        (x, y) => Pair<List<A>, List<B>>.pair(x.a + y.a, x.b + y.b)
+      , Pair<List<A>, List<B>>.pair(List<A>.Empty, List<B>.Empty)
+      );
+    }
+
     public static List<A> ListValue<A>(this A a) {
       return List<A>.Cons(a, List<A>.Empty);
     }
